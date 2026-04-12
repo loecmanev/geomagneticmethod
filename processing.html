@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="geomagnetik.png">
+    <title>GeomagApp</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff7300;
+            --bg-main: #121212;
+            --bg-sidebar: #181818;
+            --bg-card: #1e1e1e;
+            --bg-hover: #2a2a2a;
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #333333;
+            --input-bg: #222222;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            transition: width 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            min-width: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-left: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            padding: 0 10px;
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-main);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 115, 0, 0.1);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .nav-text {
+            margin-left: 10px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .burger-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .burger-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #ff3333;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-left: 15px;
+            border: 1px solid #ff3333;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff3333;
+            color: white;
+        }
+
+        .workspace {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .settings-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-top: 3px solid var(--bg-hover);
+            transition: border-top-color 0.3s;
+        }
+
+        .settings-card:hover {
+            border-top-color: var(--primary-color);
+        }
+
+        .settings-card h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 115, 0, 0.2);
+        }
+
+        .action-container {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-process {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn-process:hover {
+            background-color: #e66a00;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" style="text-decoration: none; display: flex; align-items: center; color: inherit;">
+                <img src="geomagnetik.png" alt="Logo" class="logo-img">
+                <div class="logo-text">Geomag<span>App</span></div>
+            </a>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="igrf.html" class="nav-link">
+                    <span class="nav-text">Koreksi IGRF</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="processing.html" class="nav-link active">
+                    <span class="nav-text">Pengolahan Data</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="topbar">
+            <button class="burger-btn" id="burger-btn" title="Toggle Sidebar">
+                &#9776;
+            </button>
+
+            <div class="user-profile">
+                <span>Memuat...</span>
+                <a href="login.html" class="logout-btn">Keluar</a>
+            </div>
+        </header>
+
+        <div class="workspace">
+            <h1 class="page-title">Parameter Pengolahan Data</h1>
+            <p class="page-subtitle">Atur parameter koreksi harian (diurnal), pembuatan grid anomali, dan penerapan filter domain frekuensi.</p>
+
+            <div class="settings-grid">
+                
+                <div class="settings-card">
+                    <h3>Koreksi Base Station & Datum</h3>
+                    <div class="form-group">
+                        <label for="base-file">Upload Data Base Station (.csv/.txt)</label>
+                        <input type="file" id="base-file" accept=".csv, .txt">
+                    </div>
+                    <div class="form-group">
+                        <label for="datum-point">Kalkulasi Datum Point (DP)</label>
+                        <select id="datum-point">
+                            <option value="auto">Otomatis (Rata-rata Base)</option>
+                            <option value="manual">Manual Input</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Pembuatan Grid (Interpolasi)</h3>
+                    <div class="form-group">
+                        <label for="grid-method">Metode Gridding</label>
+                        <select id="grid-method">
+                            <option value="kriging">Kriging</option>
+                            <option value="min-curvature">Minimum Curvature</option>
+                            <option value="idw">Inverse Distance Weighting (IDW)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grid-spacing">Spasi Grid (meter)</label>
+                        <input type="number" id="grid-spacing" placeholder="Contoh: 50" value="50">
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Filter Medan Magnet (Opsional)</h3>
+                    <div class="form-group">
+                        <label for="inclination">Inklinasi Geomagnetik (°)</label>
+                        <input type="number" id="inclination" placeholder="Contoh: -30.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="declination">Deklinasi Geomagnetik (°)</label>
+                        <input type="number" id="declination" placeholder="Contoh: 1.2">
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-type">Terapkan Filter</label>
+                        <select id="filter-type">
+                            <option value="none">Tanpa Filter (Anomali Total)</option>
+                            <option value="rtp">Reduction to Pole (RTP)</option>
+                            <option value="upward">Upward Continuation</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="action-container">
+                <button class="btn-process" onclick="alert('Parameter berhasil disimpan. Memulai proses gridding di backend Python...')">Proses Data Menjadi Peta</button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const burgerBtn = document.getElementById('burger-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        burgerBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        const namaTersimpan = localStorage.getItem('praktikan_nama');
+        const userDisplay = document.querySelector('.user-profile span');
+
+        if (namaTersimpan) {
+            userDisplay.innerText = namaTersimpan;
+        } else {
+            window.location.href = "login.html";
+        }
+
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>

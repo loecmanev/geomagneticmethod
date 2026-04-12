@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="geomagnetik.png">
+    <title>GeomagApp</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff7300;
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #333333;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 45px;
+            width: auto;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            margin-left: 2rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 5% 4rem;
+            background-color: var(--bg-main);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 5% 8rem 5%;
+            background-color: var(--bg-main);
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            padding: 2.5rem 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-bottom: 4px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        .about-section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .blurred-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(12px) brightness(0.35);
+            transform: scale(1.05);
+            z-index: 1;
+        }
+
+        .org-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            padding: 5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .org-container h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .org-card {
+            background-color: rgba(20, 20, 20, 0.7);
+            border: 1px solid var(--primary-color);
+            border-top: 4px solid var(--primary-color);
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            min-width: 220px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .org-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffffff;
+        }
+
+        .org-card h4 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .org-card p {
+            font-size: 1rem;
+            margin: 0.3rem 0;
+            color: var(--text-main);
+            font-weight: 300;
+        }
+
+        .arrow-down {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: -1rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            z-index: 20;
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 115, 0, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(255, 115, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 115, 0, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .org-level { gap: 1rem; }
+            .org-card { width: 100%; min-width: unset; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+
+        .auth-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 2rem;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--primary-color);
+            object-fit: cover;
+            vertical-align: middle;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 115, 0, 0.4);
+        }
+
+        .dropdown-content {
+            visibility: hidden;
+            position: absolute;
+            right: 0;
+            top: 55px;
+            background-color: var(--bg-card);
+            min-width: 190px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            z-index: 200;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .dropdown-content.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 16px 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .dropdown-greeting {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .dropdown-name {
+            display: block;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.5px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 0;
+        }
+
+        .logout-text {
+            color: #ff4d4d !important;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-text svg {
+            transition: transform 0.2s ease;
+        }
+
+        .logout-text:hover {
+            background-color: rgba(255, 77, 77, 0.1);
+            padding-left: 25px;
+        }
+
+        .logout-text:hover svg {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-container">
+            <img src="geomagnetik.png" alt="Logo Laboratorium Geomagnetik" class="logo-img">
+            <div class="logo-text">Geomagnetic<span>Method</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="#beranda">Dashboard</a>
+            <a href="#modul">About Us</a>
+            <div class="auth-container">
+                <a href="login.html" id="nav-login-btn">Login</a>
+                <div id="nav-profile-menu" class="user-menu" style="display: none;">
+                    <img src="" alt="Profile" class="profile-avatar" id="profile-img">
+                    <div class="dropdown-content" id="profile-dropdown">
+                        <div class="dropdown-header">
+                            <span class="dropdown-greeting" id="dropdown-user-nim">115230031</span>
+                            <span class="dropdown-name" id="dropdown-user-name">Nama Pengguna</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="nav-logout-btn" class="logout-text">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Keluar Sesi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="beranda">
+        <h1>Praktikum Metode Geomagnetik 2026</h1>
+        <p>Selamat datang di website pengolahan data geomagnetik yang dirancang untuk memudahkan praktikan dalam melakukan koreksi data, pembuatan peta, hingga pemodelan 2.5 D.</p>
+        
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="checkLogin()" class="btn btn-primary">Mulai Pengolahan Data</a>
+            <a href="ModulGeomagnet.pdf" download="Modul_Praktikum_Geomagnetik.pdf" class="btn btn-outline">Unduh Modul Praktikum</a>
+        </div>
+    </header>
+
+    <section class="features" id="pengolahan">
+        <div class="feature-card">
+            <h3>1. Lorem ipsum dolor sit amet</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        <div class="feature-card">
+            <h3>2. Lorem ipsum dolor sit amet</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        <div class="feature-card">
+            <h3>3. Lorem ipsum dolor sit amet</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+    </section>
+
+    <div class="about-section" id="modul">
+        <img src="foto-pengurus.jpeg" alt="Background Asisten Laboratorium" class="blurred-bg">
+        
+        <div class="org-container">
+            <h2>Struktur Kepengurusan</h2>
+            
+            <div class="org-chart">
+                <div class="org-level">
+                    <div class="org-card">
+                        <h4>Koordinator Laboratorium</h4>
+                        <p>Uli Ulfa, S.Pd., M.Si.</p>
+                        <p>Eko Wibowo, S.T., M.T.</p>
+                    </div>
+                </div>
+
+                <div class="arrow-down">↓</div>
+
+                <div class="org-level">
+                    <div class="org-card">
+                        <h4>Koordinator Asisten</h4>
+                        <p>Rizal Dani Bahtiar</p>
+                    </div>
+                </div>
+
+                <div class="arrow-down">↓</div>
+
+                <div class="org-level">
+                    <div class="org-card">
+                        <h4>Divisi Sekben</h4>
+                        <p>Annisa Cahyarani Devi</p>
+                        <p>Zakia Isya Indrayanti</p>
+                    </div>
+                    
+                    <div class="org-card">
+                        <h4>Divisi Lapangan</h4>
+                        <p>Wilhelmina Putri</p>
+                        <p>Ghazian Amjadah Ulayya</p>
+                        <p>Daru Adji Sasongko</p>
+                    </div>
+
+                    <div class="org-card">
+                        <h4>Divisi Pendidikan</h4>
+                        <p>Muhammad Luqman R.</p>
+                        <p>Muhammad Aldiansyah</p>
+                        <p>Charlos Hasudungan S.</p>
+                    </div>
+
+                    <div class="org-card">
+                        <h4>Divisi Humas</h4>
+                        <p>Hidayat Nur Widianto</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Laboratorium Geofisika Eksplorasi - UPN "Veteran" Yogyakarta. Developed by @luqmanrhmt</p>
+    </footer>
+
+    <script>
+        function checkLogin() {
+            const userNama = localStorage.getItem('praktikan_nama');
+            if (userNama) {
+                window.location.href = "igrf.html";
+            } else {
+                window.location.href = "login.html";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const userNama = localStorage.getItem('praktikan_nama');
+            const userNim = localStorage.getItem('praktikan_nim');
+
+            const loginBtn = document.getElementById('nav-login-btn');
+            const profileMenu = document.getElementById('nav-profile-menu');
+            const profileImg = document.getElementById('profile-img');
+            const dropdownName = document.getElementById('dropdown-user-name');
+            const dropdownNim = document.getElementById('dropdown-user-nim');
+            const dropdownContent = document.getElementById('profile-dropdown');
+            const logoutBtn = document.getElementById('nav-logout-btn');
+
+            if (userNama) {
+                loginBtn.style.display = 'none';
+                profileMenu.style.display = 'block';
+                
+                dropdownName.innerText = userNama.split(" ")[0].toUpperCase();
+                
+                dropdownNim.innerText = userNim ? userNim : "-"; 
+
+                profileImg.src = `https://ui-avatars.com/api/?name=${userNama}&background=ff7300&color=fff&bold=true`;
+            } else {
+                loginBtn.style.display = 'inline-block';
+                profileMenu.style.display = 'none';
+            }
+
+            profileImg.addEventListener('click', function(event) {
+                dropdownContent.classList.toggle('show');
+                event.stopPropagation();
+            });
+
+            window.addEventListener('click', function(event) {
+                if (!event.target.matches('.profile-avatar')) {
+                    if (dropdownContent.classList.contains('show')) {
+                        dropdownContent.classList.remove('show');
+                    }
+                }
+            });
+
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

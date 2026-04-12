@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="geomagnetik.png">
+    <title>GeomagApp</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff7300;
+            --bg-main: #121212;
+            --bg-sidebar: #181818;
+            --bg-card: #1e1e1e;
+            --bg-hover: #2a2a2a;
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #333333;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            transition: width 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            min-width: 32px;
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-left: 12px;
+            transition: opacity 0.2s;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            padding: 0 10px;
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-main);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 115, 0, 0.1);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-text {
+            margin-left: 10px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .burger-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .burger-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            color: #ff3333;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-left: 15px;
+            border: 1px solid #ff3333;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff3333;
+            color: white;
+        }
+
+        .workspace {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .panel-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .panel-card {
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-card h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #2a2a2a;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            transition: 0.3s;
+            margin-top: auto;
+        }
+
+        .btn:hover {
+            background-color: #e66a00;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            margin-top: 0.5rem;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px dashed var(--primary-color);
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .result-item span.value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" style="text-decoration: none; display: flex; align-items: center; color: inherit;">
+                <img src="geomagnetik.png" alt="Logo" class="logo-img">
+                <div class="logo-text">Geomag<span>App</span></div>
+            </a>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <span class="nav-text">Koreksi IGRF</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="processing.html" class="nav-link">
+                    <span class="nav-text">Pengolahan Data</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="burger-btn" id="burger-btn" title="Toggle Sidebar">&#9776;</button>
+            <div class="user-profile">
+                <span>Praktikan Aktif: Memuat...</span>
+                <a href="#" class="logout-btn">Keluar</a>
+            </div>
+        </header>
+
+        <div class="workspace">
+            <h1 class="page-title">Koreksi IGRF</h1>
+            <p class="page-subtitle">Hitung nilai referensi geomagnetik internasional berdasarkan koordinat lintang, bujur, dan elevasi.</p>
+
+            <div class="panel-container">
+                <div class="panel-card">
+                    <h3>Kalkulator Tunggal</h3>
+                    
+                    <div class="input-group">
+                        <label>Tanggal Survei (MM/DD/YYYY)</label>
+                        <input type="date" id="in-tanggal" required>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Latitude (Y)</label>
+                            <input type="number" id="in-lat" placeholder="Contoh: -7.75" step="any" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <label>Longitude (X)</label>
+                            <input type="number" id="in-lon" placeholder="Contoh: 110.42" step="any" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Elevasi / Ketinggian (Meter)</label>
+                        <input type="number" id="in-alt" placeholder="Contoh: 150" step="any" required>
+                    </div>
+
+                    <button class="btn" onclick="hitungIGRF()">Kalkulasi</button>
+
+                    <div class="result-box" id="box-hasil">
+                        <h4>Hasil Komputasi</h4>
+                        <div class="result-item">Deklinasi (D) <span class="value" id="res-dec">-</span></div>
+                        <div class="result-item">Inklinasi (I) <span class="value" id="res-inc">-</span></div>
+                        <div class="result-item" style="border-bottom: none; color: white;">Total Field (F) <span class="value" id="res-f" style="color: #ff7300;">-</span></div>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Import Data (Excel)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                        Unggah file .xlsx. Pastikan urutan kolom: <b>1: Latitude, 2: Longitude, 3: Elevasi (m)</b>.
+                    </p>
+                    <div class="input-group">
+                        <label>Pilih File Excel (.xlsx)</label>
+                        <input type="file" id="in-file-excel" accept=".xlsx, .xls" style="padding: 0.6rem;">
+                    </div>
+                    <div class="input-group">
+                        <label>Tanggal Survei (MM/DD/YYYY)</label>
+                        <input type="date" id="in-tanggal-massal" required>
+                    </div>
+                    <button class="btn" id="btn-proses-massal" onclick="prosesMassal()">Kalkulasi</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-hasil" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+            <div style="background-color: var(--bg-card); width: 90%; max-width: 1000px; max-height: 80vh; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column;">
+                
+                <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="color: var(--primary-color);">Hasil Perhitungan (<span id="txt-total-data">0</span> titik)</h3>
+                    <button onclick="document.getElementById('modal-hasil').style.display='none'" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                </div>
+
+                <div style="padding: 1rem; overflow-y: auto; flex-grow: 1;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                        <thead style="background-color: var(--bg-hover);">
+                            <tr>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">No</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Lat</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Lon</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Elev (m)</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Deklinasi</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Inklinasi</th>
+                                <th style="padding: 10px; border-bottom: 2px solid var(--primary-color);">Total Field (nT)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-hasil-massal">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="padding: 1.5rem; border-top: 1px solid var(--border-color); text-align: right;">
+                    <button class="btn" style="width: auto; padding: 0.8rem 2rem;" onclick="exportKeExcel()">⬇ Download Excel (.xlsx)</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        const burgerBtn = document.getElementById('burger-btn');
+        const sidebar = document.getElementById('sidebar');
+        
+        burgerBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        const namaTersimpan = localStorage.getItem('praktikan_nama');
+        const userDisplay = document.querySelector('.user-profile span');
+
+        if (namaTersimpan) {
+            userDisplay.innerText = namaTersimpan;
+            document.getElementById('in-tanggal').valueAsDate = new Date();
+        } else {
+            window.location.href = "login.html";
+        }
+
+        document.querySelector('.logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = "index.html";
+        });
+
+        function hitungIGRF() {
+            const lat = parseFloat(document.getElementById('in-lat').value);
+            const lon = parseFloat(document.getElementById('in-lon').value);
+            const alt = parseFloat(document.getElementById('in-alt').value);
+            const tanggal = document.getElementById('in-tanggal').value;
+
+            if (isNaN(lat) || isNaN(lon) || isNaN(alt) || !tanggal) {
+                alert("Mohon lengkapi semua koordinat dan tanggal!");
+                return;
+            }
+
+            const btn = document.querySelector('button.btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Menghitung...";
+            btn.disabled = true;
+
+            fetch('http://127.0.0.1:8000/api/hitung_igrf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nama_praktikan: namaTersimpan,
+                    lat: lat,
+                    lon: lon,
+                    alt: alt,
+                    tanggal: tanggal
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+
+                if (data.status === "success") {
+                    document.getElementById('box-hasil').style.display = 'block';
+                    document.getElementById('res-dec').innerText = data.data.deklinasi + "°";
+                    document.getElementById('res-inc').innerText = data.data.inklinasi + "°";
+                    document.getElementById('res-f').innerText = data.data.total_field + " nT";
+                } else {
+                    alert("Error Server: " + data.message);
+                }
+            })
+            .catch(error => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                alert("Koneksi gagal. Pastikan server main.py sedang berjalan!");
+            });
+        }
+
+        if (namaTersimpan) {
+            document.getElementById('in-tanggal-massal').valueAsDate = new Date();
+        }
+
+        let dataHasilGlobal = [];
+
+        function prosesMassal() {
+            const fileInput = document.getElementById('in-file-excel');
+            const tanggal = document.getElementById('in-tanggal-massal').value;
+
+            if (fileInput.files.length === 0) {
+                alert("Pilih file Excel terlebih dahulu!");
+                return;
+            }
+            if (!tanggal) {
+                alert("Tentukan tanggal survei!");
+                return;
+            }
+
+            const btn = document.getElementById('btn-proses-massal');
+            btn.innerText = "Mengunggah & Memproses...";
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+            formData.append("tanggal", tanggal);
+
+            fetch('http://127.0.0.1:8000/api/hitung_igrf_massal', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.innerText = "Jalankan Analisis Massal";
+                btn.disabled = false;
+
+                if (data.status === "success") {
+                    dataHasilGlobal = data.data;
+                    document.getElementById('txt-total-data').innerText = data.total_data;
+                    
+                    const tbody = document.getElementById('tbody-hasil-massal');
+                    tbody.innerHTML = '';
+
+                    const dataTampil = dataHasilGlobal.slice(0, 100);
+                    
+                    dataTampil.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.Titik}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.Lat}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.Lon}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.Elevasi}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.IGRF_Dec}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333;">${row.IGRF_Inc}</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #333; color: var(--primary-color); font-weight: bold;">${row.IGRF_Total}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    if (data.total_data > 100) {
+                        const trInfo = document.createElement('tr');
+                        trInfo.innerHTML = `<td colspan="7" style="text-align: center; padding: 15px; color: #b3b3b3; font-style: italic;">... Menampilkan 100 data pertama. Silakan Download Excel untuk melihat seluruh hasil (${data.total_data} baris).</td>`;
+                        tbody.appendChild(trInfo);
+                    }
+
+                    document.getElementById('modal-hasil').style.display = 'flex';
+                } else {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                btn.innerText = "Jalankan Analisis Massal";
+                btn.disabled = false;
+                alert("Gagal memproses file. Pastikan server berjalan dan format file benar.");
+                console.error(error);
+            });
+        }
+
+        function exportKeExcel() {
+            if (dataHasilGlobal.length === 0) {
+                alert("Tidak ada data untuk didownload.");
+                return;
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(dataHasilGlobal);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Hasil_IGRF");
+            XLSX.writeFile(workbook, "Hasil_Koreksi_IGRF.xlsx");
+        }
+    </script>
+</body>
+</html>

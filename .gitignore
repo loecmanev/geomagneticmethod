@@ -1,0 +1,22 @@
+# Mengabaikan folder cache bawaan Python
+__pycache__/
+*/__pycache__/
+*.pyc
+
+# Mengabaikan file database SQLite agar data praktikan aman
+*.db
+praktikum_geomagnet.db
+
+# Mengabaikan pengaturan VS Code lokal
+.vscode/
+
+# Mengabaikan OS generated files
+.DS_Store
+
+# Mengabaikan folder hasil build aplikasi desktop
+build/
+dist/
+IGRF/build/
+IGRF/dist/
+*.exe
+*.spec

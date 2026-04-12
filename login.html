@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="geomagnetik.png">
+    <title>GeomagApp</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff7300;
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --border-color: #333333;
+            --input-bg: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at center, #1e1e1e 0%, #121212 100%);
+        }
+
+        .login-card {
+            background-color: var(--bg-card);
+            padding: 3rem 3.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-img {
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 115, 0, 0.2);
+        }
+
+        .input-group input:invalid {
+            box-shadow: none;
+        }
+
+        .input-group input:invalid:focus {
+            border-color: #ff3333;
+            box-shadow: 0 0 0 2px rgba(255, 51, 51, 0.2);
+        }
+
+        .input-group input:valid:not(:placeholder-shown) {
+            border-color: #28a745;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #e66a00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 115, 0, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-header">
+            <div class="brand-container">
+                <img src="geomagnetik.png" alt="Logo" class="logo-img">
+                <div class="logo-text">Geomagnetic<span>Method</span></div>
+            </div>
+            <p>Masukkan Nama Lengkap dan NIM Anda.</p>
+        </div>
+
+        <form id="praktikanForm">
+            <div class="input-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda" pattern="[A-Za-z\s]+" title="Hanya gunakan huruf alfabet" required>
+            </div>
+
+            <div class="input-group">
+                <label for="nim">Nomor Induk Mahasiswa (NIM)</label>
+                <input type="text" id="nim" placeholder="Contoh: 115230031" pattern="\d{9}" title="Masukkan 9 digit NIM berupa angka" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Kembali ke Beranda</a>
+    </div>
+
+    <script>
+        document.getElementById('praktikanForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const namaInput = document.getElementById('nama').value;
+            const nimInput = document.getElementById('nim').value;
+
+            console.log("Mengirim data ke server...");
+
+            fetch('http://127.0.0.1:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nama: namaInput,
+                    nim: nimInput
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.setItem('praktikan_nama', namaInput);
+                    localStorage.setItem('praktikan_nim', nimInput);
+                    window.location.href = "igrf.html";
+                } else {
+                    alert("Gagal: " + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error FETCH:', error);
+                alert("Javascript Error: Cek Console (F12)");
+            });
+        });
+    </script>
+
+</body>
+</html>
