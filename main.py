@@ -117,22 +117,17 @@ async def hitung_igrf(data: IGRFInput):
         return {"status": "error", "message": "Model IGRF belum dimuat di server."}
 
     try:
-        # Konversi tanggal
         survey_date = datetime.datetime.strptime(data.tanggal, "%Y-%m-%d").date()
         decimal_year = date_to_decimal_year(survey_date)
         
-        # Interpolasi koefisien
         f_interp = interpolate.interp1d(IGRF_MODEL_DATA.time, IGRF_MODEL_DATA.coeffs, fill_value='extrapolate')
         coeffs = f_interp(decimal_year)
         
-        # Konversi elevasi
         alt_km = data.alt / 1000.0 
         
-        # Hitung Geocentric
         r, colat_rad, sd, cd = geodetic_to_geocentric(data.lat, data.lon, alt_km)
         colat_deg = np.degrees(colat_rad)
         
-        # Sintesis nilai (menggunakan fungsi iut dari script Anda)
         Br, Bt, Bp = iut.synth_values(coeffs.T, r, colat_deg, data.lon, IGRF_MODEL_DATA.parameters['nmax'])
         
         X = -Bt
@@ -143,10 +138,8 @@ async def hitung_igrf(data: IGRFInput):
         X = X * cd + Z * sd
         Z = Z * cd - t * sd
         
-        # Ekstrak nilai Deklinasi, Inklinasi, Total Field
         dec, hoz, inc, eff = iut.xyz2dhif(X, Y, Z)
         
-        # Cetak di terminal untuk bukti jalan
         print(f"[{data.nama_praktikan}] menghitung koordinat ({data.lat}, {data.lon}) -> F: {round(eff, 2)} nT")
 
         return {
@@ -165,7 +158,6 @@ from fastapi import UploadFile, File, Form
 import pandas as pd
 import io
 
-# ... (Kode main.py Anda yang sebelumnya tetap ada di atasnya) ...
 
 @app.post("/api/hitung_igrf_massal")
 async def hitung_igrf_massal(
@@ -176,19 +168,13 @@ async def hitung_igrf_massal(
         return {"status": "error", "message": "Model IGRF belum dimuat di server."}
 
     try:
-        # 1. Baca file Excel yang diunggah ke dalam memori
         isi_file = await file.read()
         
-        # Baca menggunakan Pandas (header=None agar nama kolom tidak dipedulikan)
-        # Asumsi: Kolom 0 = Lat, Kolom 1 = Lon, Kolom 2 = Alt
         df = pd.read_excel(io.BytesIO(isi_file), header=None)
         
-        # Cek apakah minimal ada 3 kolom
         if len(df.columns) < 3:
             return {"status": "error", "message": "File Excel minimal harus memiliki 3 kolom (Latitude, Longitude, Elevasi)."}
 
-        # Buang baris pertama jika itu adalah teks header (misal: "Lat", "Lon")
-        # Kita cek apakah baris pertama kolom pertama adalah string
         if isinstance(df.iloc[0, 0], str):
             df = df.iloc[1:].reset_index(drop=True)
 
@@ -199,10 +185,8 @@ async def hitung_igrf_massal(
         f_interp = interpolate.interp1d(IGRF_MODEL_DATA.time, IGRF_MODEL_DATA.coeffs, fill_value='extrapolate')
         coeffs = f_interp(decimal_year)
 
-        # Siapkan tempat untuk menyimpan hasil
         hasil_komputasi = []
 
-        # 3. Looping setiap baris di Excel
         for index, row in df.iterrows():
             try:
                 lat = float(row[0])
@@ -210,7 +194,6 @@ async def hitung_igrf_massal(
                 alt_m = float(row[2])
                 alt_km = alt_m / 1000.0
                 
-                # Proses Geocentric -> Synth -> DHIF
                 r, colat_rad, sd, cd = geodetic_to_geocentric(lat, lon, alt_km)
                 colat_deg = np.degrees(colat_rad)
                 
@@ -226,7 +209,6 @@ async def hitung_igrf_massal(
                 
                 dec, hoz, inc, eff = iut.xyz2dhif(X, Y, Z)
                 
-                # Simpan hasil untuk baris ini
                 hasil_komputasi.append({
                     "Titik": index + 1,
                     "Lat": round(lat, 6),
@@ -237,10 +219,8 @@ async def hitung_igrf_massal(
                     "IGRF_Total": round(eff, 2)
                 })
             except Exception as e:
-                # Jika ada baris yang kosong atau error angkanya, lewati saja
                 continue
 
-        # 4. Kembalikan data hasil komputasi ke Frontend
         print(f"Berhasil memproses {len(hasil_komputasi)} titik data massal.")
         return {
             "status": "success",
@@ -253,4 +233,6 @@ async def hitung_igrf_massal(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    import os
+    port = int(os.environ.get("PORT", 8000)) 
+    uvicorn.run(app, host="0.0.0.0", port=port)

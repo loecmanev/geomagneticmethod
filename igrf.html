@@ -469,7 +469,7 @@
             btn.innerText = "Menghitung...";
             btn.disabled = true;
 
-            fetch('http://127.0.0.1:8000/api/hitung_igrf', {
+            fetch('https://loecmanev-geomagneticmethod.hf.space/api/hitung_igrf', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -528,7 +528,7 @@
             formData.append("file", fileInput.files[0]);
             formData.append("tanggal", tanggal);
 
-            fetch('http://127.0.0.1:8000/api/hitung_igrf_massal', {
+            fetch('https://loecmanev-geomagneticmethod.hf.space/api/hitung_igrf_massal', {
                 method: 'POST',
                 body: formData
             })
