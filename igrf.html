@@ -534,7 +534,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                btn.innerText = "Jalankan Analisis Massal";
+                btn.innerText = "Kalkulasi";
                 btn.disabled = false;
 
                 if (data.status === "success") {
@@ -572,7 +572,7 @@
                 }
             })
             .catch(error => {
-                btn.innerText = "Jalankan Analisis Massal";
+                btn.innerText = "Kalkulasi";
                 btn.disabled = false;
                 alert("Gagal memproses file. Pastikan server berjalan dan format file benar.");
                 console.error(error);
