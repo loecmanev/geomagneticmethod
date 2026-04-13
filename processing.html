@@ -331,61 +331,10 @@
         </header>
 
         <div class="workspace">
-            <h1 class="page-title">Parameter Pengolahan Data</h1>
-            <p class="page-subtitle">Atur parameter koreksi harian (diurnal), pembuatan grid anomali, dan penerapan filter domain frekuensi.</p>
+            <h1 class="page-title">Under Construction</h1>
+            <p class="page-subtitle">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</p>
 
             <div class="settings-grid">
-                
-                <div class="settings-card">
-                    <h3>Koreksi Base Station & Datum</h3>
-                    <div class="form-group">
-                        <label for="base-file">Upload Data Base Station (.csv/.txt)</label>
-                        <input type="file" id="base-file" accept=".csv, .txt">
-                    </div>
-                    <div class="form-group">
-                        <label for="datum-point">Kalkulasi Datum Point (DP)</label>
-                        <select id="datum-point">
-                            <option value="auto">Otomatis (Rata-rata Base)</option>
-                            <option value="manual">Manual Input</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="settings-card">
-                    <h3>Pembuatan Grid (Interpolasi)</h3>
-                    <div class="form-group">
-                        <label for="grid-method">Metode Gridding</label>
-                        <select id="grid-method">
-                            <option value="kriging">Kriging</option>
-                            <option value="min-curvature">Minimum Curvature</option>
-                            <option value="idw">Inverse Distance Weighting (IDW)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="grid-spacing">Spasi Grid (meter)</label>
-                        <input type="number" id="grid-spacing" placeholder="Contoh: 50" value="50">
-                    </div>
-                </div>
-
-                <div class="settings-card">
-                    <h3>Filter Medan Magnet (Opsional)</h3>
-                    <div class="form-group">
-                        <label for="inclination">Inklinasi Geomagnetik (°)</label>
-                        <input type="number" id="inclination" placeholder="Contoh: -30.5">
-                    </div>
-                    <div class="form-group">
-                        <label for="declination">Deklinasi Geomagnetik (°)</label>
-                        <input type="number" id="declination" placeholder="Contoh: 1.2">
-                    </div>
-                    <div class="form-group">
-                        <label for="filter-type">Terapkan Filter</label>
-                        <select id="filter-type">
-                            <option value="none">Tanpa Filter (Anomali Total)</option>
-                            <option value="rtp">Reduction to Pole (RTP)</option>
-                            <option value="upward">Upward Continuation</option>
-                        </select>
-                    </div>
-                </div>
 
             </div>
 
