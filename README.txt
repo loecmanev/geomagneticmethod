@@ -1,7 +1,8 @@
 GeomagApp - Web Praktikum Metode Geomagnetik 2026
 GeomagApp adalah platform berbasis web yang dirancang khusus untuk membantu praktikan dalam melakukan pengolahan data geomagnetik.
 
-Backend (Server-side) Bahasa Pemrograman: Python 3.11. 
+Backend (Server-side) 
+Bahasa Pemrograman: Python 3.11. 
 Framework: FastAPI. 
 Library Utama: NumPy, SciPy, Pandas, dan IGRF-Utils. 
 Database: SQLite3 untuk manajemen persistensi data sesi. 
